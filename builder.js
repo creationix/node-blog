@@ -32,7 +32,7 @@ Http.createServer(function (req, res) {
 
 function build(data) {
   p(data);
-  exec("git --git-dir=data/.git pull origin master").addCallback(function (stdout, stderr) {
+  exec("git --git-dir=data/.git --work-tree=data/ pull origin master").addCallback(function (stdout, stderr) {
     puts(stdout);
   });
 }
