@@ -1,3 +1,33 @@
-<h2>HowToNode.org</h2>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 
-<p>This will be a site that shows tutorials on various nodejs topics. </p>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>HowToNode.org</title>
+</head>
+
+<body>
+
+  <h2>HowToNode.org</h2>
+
+  <p>This will be a site that shows tutorials on various nodejs topics. </p>
+  <div id="disqus_thread"></div><script type="text/javascript" src="http://disqus.com/forums/howtonodeorg/embed.js"></script><noscript><a href="http://disqus.com/forums/howtonodeorg/?url=ref">View the discussion thread.</a></noscript><a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+  <script type="text/javascript">
+  //<![CDATA[
+  (function() {
+  	var links = document.getElementsByTagName('a');
+  	var query = '?';
+  	for(var i = 0; i < links.length; i++) {
+  	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+  		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+  	}
+  	}
+  	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/howtonodeorg/get_num_replies.js' + query + '"></' + 'script>');
+  })();
+  //]]>
+  </script>
+</body>
+</html>
+
