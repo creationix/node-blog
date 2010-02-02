@@ -115,8 +115,46 @@ function loop(obj, callback) {
   }
 }
 
-function render(data) {
+// combo library.  Allows to group several callbacks.
+function Combo(callback) {
+  this.callback = callback;
+  this.items = 0;
+  this.results = [];
+}
+Combo.prototype = {
+  add: function () {
+    var self = this;
+    this.items++;
+    return function () {
+      self.check(self.items - 1, arguments);
+    };
+  },
+  check: function (id, arguments) {
+    this.results[id] = Array.prototype.slice.call(arguments);
+    this.items--;
+    if (this.items == 0) {
+      this.callback.apply(this, this.results);
+    }
+  }
+};
+
+
+function render(data, next) {
   var Helpers, haml;
+  var group = new Combo(function() {
+    var args = Array.prototype.slice.call(arguments);
+    next(args.map(function (arg) {
+      return arg[0];
+    }).join("\n"))
+  });
+
+  function write_file(filename, content) {
+    var cb = group.add();
+    File.write(filename, content).addCallback(function () {
+      cb("Wrote " + content.length + " bytes to " + filename);
+    })
+  }
+
   Helpers = {
     github: function (name) {
       return "http://github.com/" + name;
@@ -138,7 +176,7 @@ function render(data) {
   // Generate a page for each author...
   loop(data.authors, function (name, props) {
     props.link = name.toLowerCase().replace(/ /g, "_") + ".html";
-    File.write(PUBLIC_DIR + "/" + props.link, haml("layout", {
+    write_file(PUBLIC_DIR + "/" + props.link, haml("layout", {
       title: "About " + name,
       content: haml("author", props)
     }));
@@ -148,31 +186,33 @@ function render(data) {
   loop(data.articles, function (name, props) {
     props.link = name + ".html";
     props.author = data.authors[props.author];
-    File.write(PUBLIC_DIR + "/" + props.link, haml("layout", {
+    write_file(PUBLIC_DIR + "/" + props.link, haml("layout", {
       title: props.title,
       content: haml("article", props)
     }));
   });
 
   // Generate a index page...
-  File.write(PUBLIC_DIR + "/index.html", haml("layout", {
+  write_file(PUBLIC_DIR + "/index.html", haml("layout", {
     title: "Index",
     content: haml("index", data)
   }));
 
   // Write the static files as is...
   loop(data.static, function (filename, content) {
-    File.write(PUBLIC_DIR + "/" + filename, content.content || content);
+    write_file(PUBLIC_DIR + "/" + filename, content.content || content);
   });
 
 }
 
-exports.build = function () {
+exports.build = function (next) {
   // Kick off the process
   main([
     ["articles", ARTICLE_DIR, /^(.*)\.(markdown)$/],
     ["authors", AUTHOR_DIR, /^(.*)\.(markdown)$/],
     ["templates", SKIN_DIR, /^(.*)\.(haml)$/],
     ["static", SKIN_DIR, /^(.*)\.([^.]+)\.([^.]+)$/]
-  ], render);
+  ], function (data) {
+    render(data, next);
+  });
 };
