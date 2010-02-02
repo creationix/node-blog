@@ -39,7 +39,7 @@ var Filters = {
 
   // Compiles
   haml: function (haml) {
-    return Haml.optimize(Haml.compile(haml));
+    return Haml.compile(haml);
   },
 
   less: function (less) {
@@ -121,6 +121,9 @@ function loop(obj, callback) {
 function render(data) {
   var Helpers, haml;
   Helpers = {
+    github: function (name) {
+      return "http://github.com/" + name;
+    },
     gravitar: function (email, size) {
       size = size || 80
       return "http://www.gravatar.com/avatar/" +
@@ -142,7 +145,8 @@ function render(data) {
 
   // Generate a page for each article...
   loop(data.articles, function (name, props) {
-    File.write(PUBLIC_DIR + "/" + name + ".html", haml("layout", {
+    props.link = name + ".html";
+    File.write(PUBLIC_DIR + "/" + props.link, haml("layout", {
       title: props.title,
       content: haml("article", props)
     }));
@@ -150,8 +154,8 @@ function render(data) {
 
   // Generate a page for each author...
   loop(data.authors, function (name, props) {
-    var filename = name.toLowerCase().replace(/ /g, "_") + ".html";
-    File.write(PUBLIC_DIR + "/" + filename, haml("layout", {
+    props.link = name.toLowerCase().replace(/ /g, "_") + ".html";
+    File.write(PUBLIC_DIR + "/" + props.link, haml("layout", {
       title: "About " + name,
       content: haml("author", props)
     }));
