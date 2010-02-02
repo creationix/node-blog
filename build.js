@@ -140,21 +140,22 @@ function render(data) {
     File.write(PUBLIC_DIR + "/" + filename, content);
   });
 
-  // Generate a page for each article...
-  loop(data.articles, function (name, props) {
-    props.link = name + ".html";
-    File.write(PUBLIC_DIR + "/" + props.link, haml("layout", {
-      title: props.title,
-      content: haml("article", props)
-    }));
-  });
-
   // Generate a page for each author...
   loop(data.authors, function (name, props) {
     props.link = name.toLowerCase().replace(/ /g, "_") + ".html";
     File.write(PUBLIC_DIR + "/" + props.link, haml("layout", {
       title: "About " + name,
       content: haml("author", props)
+    }));
+  });
+
+  // Generate a page for each article...
+  loop(data.articles, function (name, props) {
+    props.link = name + ".html";
+    props.author = data.authors[props.author];
+    File.write(PUBLIC_DIR + "/" + props.link, haml("layout", {
+      title: props.title,
+      content: haml("article", props)
     }));
   });
 
