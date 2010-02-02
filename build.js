@@ -135,11 +135,6 @@ function render(data) {
   };
   haml = Helpers.partial;
 
-  // Write the static files as is...
-  loop(data.static, function (filename, content) {
-    File.write(PUBLIC_DIR + "/" + filename, content);
-  });
-
   // Generate a page for each author...
   loop(data.authors, function (name, props) {
     props.link = name.toLowerCase().replace(/ /g, "_") + ".html";
@@ -164,6 +159,12 @@ function render(data) {
     title: "Index",
     content: haml("index", data)
   }));
+
+  // Write the static files as is...
+  loop(data.static, function (filename, content) {
+    File.write(PUBLIC_DIR + "/" + filename, content);
+  });
+
 }
 
 exports.build = function () {
