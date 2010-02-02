@@ -142,16 +142,15 @@ Combo.prototype = {
 function render(data, next) {
   var Helpers, haml;
   var group = new Combo(function() {
-    var args = Array.prototype.slice.call(arguments);
-    next(args.map(function (arg) {
-      return arg[0];
+    next("Done!\n" + Array.prototype.map.call(arguments, function (args) {
+      return args[0] + " - " + args[1];
     }).join("\n"))
   });
 
   function write_file(filename, content) {
     var cb = group.add();
     File.write(filename, content).addCallback(function () {
-      cb("Wrote " + content.length + " bytes to " + filename);
+      cb(new Date(), "  Wrote " + content.length + " bytes to " + filename);
     })
   }
 

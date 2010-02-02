@@ -5,10 +5,7 @@ process.mixin(require('sys'));
 var PORT = 4242;
 
 function log(message) {
-  var date = new Date();
-  message.split("\n").forEach(function (line) {
-    puts(date + " - " + line);
-  })
+  puts((new Date()) + " - " + message);
 }
 
 Http.createServer(function (req, res) {
@@ -47,7 +44,7 @@ function build(data, next) {
 
     log("Rebuilding site");
     Build.build(function (output) {
-      log(output + "\nDone!");
+      log(output);
       building = false;
       next(output);
     });
