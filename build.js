@@ -24,10 +24,6 @@ var Filters = {
       var name = match[1].toLowerCase(),
           value = match[2];
       markdown = markdown.substr(match[0].length);
-      if (value.match(/\d+-\d+-\d+/)) {
-        value = value.split('-');
-        value = new Date(value[0], value[1], value[2]);
-      }
       props[name] = value;
     }
     props.content = Markdown.encode(markdown);
@@ -138,6 +134,23 @@ Combo.prototype = {
   }
 };
 
+// Generic compare helper
+function cmp(value1, value2) {
+  return ((value1 == value2) ? 0 : ((value1 > value2) ? 1 : -1));
+}
+
+// Do a custom sort on an object
+function object_sort(obj, callback) {
+  var keys = Object.keys(obj);
+  var newobj = {};
+  keys.sort(function (first, second) {
+    return callback(first, obj[first], second, obj[second]);
+  });
+  keys.forEach(function (key) {
+    newobj[key] = obj[key];
+  });
+  return newobj;
+}
 
 function render(data, next) {
   var Helpers, haml;
@@ -168,9 +181,50 @@ function render(data, next) {
       var locals = Object.create(Helpers);
       process.mixin(locals, props);
       return Haml.execute(data.templates[name], {}, locals);
+    },
+    format_date: function (date, format) {
+      var date = new Date(date),
+          match, value;
+      while (match = format.match(/(%[a-z])/i)) {
+        switch (match[1]) {
+          case "%d":
+            value = date.getDate();
+            break;
+          case "%m":
+            value = date.getMonth();
+            break;
+          case "%Y":
+            value = date.getFullYear();
+            break;
+          case "%H":
+            value = date.getHours();
+            break;
+          case "%M":
+            value = date.getMinutes();
+            break;
+          case "%S":
+            value = date.getSeconds();
+            break;
+          default:
+            value = "";
+            break;
+        }
+        format = format.replace(match[1], value);
+      }
+      return format;
     }
   };
   haml = Helpers.partial;
+
+  // Sort authors by name
+  data.authors = object_sort(data.authors, function (key1, value1, key2, value2) {
+    return cmp(key1, key2);
+  });
+
+  // Sort articles by date
+  data.articles = object_sort(data.articles, function (key1, value1, key2, value2) {
+    return cmp(value1.date, value2.date);
+  });
 
   // Generate a page for each author...
   loop(data.authors, function (name, props) {

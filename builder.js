@@ -59,4 +59,7 @@ function build(data, next) {
     real_build();
   }
 }
-log('Server running at http://127.0.0.1:' + PORT + '/');
+build(undefined, function(output) {
+  log("Initial build done. Waiting for more requests");
+  log('Server running at http://127.0.0.1:' + PORT + '/');
+});
