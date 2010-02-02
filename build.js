@@ -1,10 +1,10 @@
 // Load some libraries
-var Haml = require('haml'),
-    Markdown = require('markdown'),
-    Less = require('less'),
+var Haml = require('./vendor/haml'),
+    Markdown = require('./vendor/markdown'),
+    Less = require('./vendor/less'),
+    md5 = require('./vendor/md5').md5,
     File = require('file'),
-    Posix = require('posix'),
-    md5 = require('md5').md5;
+    Posix = require('posix');
 
 var ARTICLE_DIR = 'data/articles',
     AUTHOR_DIR = 'data/authors',
