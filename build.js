@@ -191,7 +191,7 @@ function render(data, next) {
             value = date.getDate();
             break;
           case "%m":
-            value = date.getMonth();
+            value = date.getMonth() + 1;
             break;
           case "%Y":
             value = date.getFullYear();
