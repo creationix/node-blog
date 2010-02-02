@@ -3,6 +3,7 @@ var Markdown = require('markdown'),
     Http = require('http'),
     Build = require('./build');
 process.mixin(require('sys'));
+var PORT = 4242;
 
 Http.createServer(function (req, res) {
   var body = "";
@@ -11,37 +12,28 @@ Http.createServer(function (req, res) {
     body += chunk;
   });
   req.addListener('complete', function () {
-    // try {
-    //   puts(body);
-    //   body = Url.parse("?" + body, true).query.payload;
-    //   puts(body);
-    //   body = JSON.parse(body);
-    // } catch(e) {
-    //   res.sendHeader(500, {'Content-Type': 'text/plain'});
-    //   res.sendBody('Problem reading post message!\n' + e.stack);
-    //
-    //   res.finish();
-    //   return;
-    // }
     try {
-      build(body);
-      res.sendHeader(200, {'Content-Type': 'text/plain'});
-      res.sendBody('Thanks for the tip!');
-      res.finish();
+      body = Url.parse("?" + body, true).query.payload;
+      body = JSON.parse(body);
     } catch(e) {
-      res.sendHeader(500, {'Content-Type': 'text/plain'});
-      res.sendBody(e.stack);
-      res.finish();
+      body = false;
     }
+    build(body);
+    res.sendHeader(200, {'Content-Type': 'text/plain'});
+    res.sendBody('Thanks for the tip!');
+    res.finish();
   });
 
-}).listen(4242);
+}).listen(PORT);
 
-function build(data) {
-  p(data);
-  exec("cd data && git pull origin master").addCallback(function (stdout, stderr) {
-    puts(stdout);
+function build(pull) {
+  if (pull) {
+    exec("cd data && git pull origin master").addCallback(function (stdout, stderr) {
+      puts(stdout);
+      Build.build();
+    });
+  } else {
     Build.build();
-  });
+  }
 }
-puts('Server running at http://127.0.0.1:4242/');
+puts('Server running at http://127.0.0.1:' + PORT + '/');
