@@ -1,7 +1,6 @@
 // Load some libraries
 var Haml = require('./vendor/haml'),
     Markdown = require('./vendor/markdown'),
-    Less = require('./vendor/less'),
     md5 = require('./vendor/md5').md5,
     File = require('file'),
     Posix = require('posix');
@@ -265,7 +264,7 @@ exports.build = function (next) {
     ["articles", ARTICLE_DIR, /^(.*)\.(markdown)$/],
     ["authors", AUTHOR_DIR, /^(.*)\.(markdown)$/],
     ["templates", SKIN_DIR, /^(.*)\.(haml)$/],
-    ["static", SKIN_DIR, /^(.*)\.([^.]+)\.([^.]+)$/]
+    ["static", SKIN_DIR, /^(.*\.(?:css|js))$/]
   ], function (data) {
     render(data, next);
   });
