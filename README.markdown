@@ -1,4 +1,5 @@
+# node-blog
 
-## HowToNode.org
+node-blog is a static site generator.  It's built on node and is currently used to auto-generate the site <http://howtonode.org/>
 
-This will be a site that shows tutorials on various nodejs topics. 
+The source code for the site is at <http://github.com/creationix/howtonode.org>
