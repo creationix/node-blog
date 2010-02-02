@@ -162,7 +162,7 @@ function render(data) {
 
   // Write the static files as is...
   loop(data.static, function (filename, content) {
-    File.write(PUBLIC_DIR + "/" + filename, content);
+    File.write(PUBLIC_DIR + "/" + filename, content.content || content);
   });
 
 }
