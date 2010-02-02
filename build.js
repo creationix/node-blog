@@ -1,6 +1,3 @@
-// Define puts and friends
-process.mixin(require('sys'));
-
 // Load some libraries
 var Haml = require('haml'),
     Markdown = require('markdown'),
@@ -168,10 +165,12 @@ function render(data) {
   }));
 }
 
-// Kick off the process
-main([
-  ["articles", ARTICLE_DIR, /^(.*)\.(markdown)$/],
-  ["authors", AUTHOR_DIR, /^(.*)\.(markdown)$/],
-  ["templates", SKIN_DIR, /^(.*)\.(haml)$/],
-  ["static", SKIN_DIR, /^(.*)\.([^.]+)\.([^.]+)$/]
-], render);
+exports.build = function () {
+  // Kick off the process
+  main([
+    ["articles", ARTICLE_DIR, /^(.*)\.(markdown)$/],
+    ["authors", AUTHOR_DIR, /^(.*)\.(markdown)$/],
+    ["templates", SKIN_DIR, /^(.*)\.(haml)$/],
+    ["static", SKIN_DIR, /^(.*)\.([^.]+)\.([^.]+)$/]
+  ], render);
+};
