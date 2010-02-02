@@ -11,8 +11,7 @@ var ARTICLE_DIR = 'data/articles',
     SKIN_DIR = 'data/skin',
     PUBLIC_DIR = 'public';
 
-var articles = [],
-    authors = {};
+var articles, authors;
 
 var Filters = {
 
@@ -260,6 +259,8 @@ function render(data, next) {
 
 exports.build = function (next) {
   // Kick off the process
+  articles = [];
+  authors = {};
   main([
     ["articles", ARTICLE_DIR, /^(.*)\.(markdown)$/],
     ["authors", AUTHOR_DIR, /^(.*)\.(markdown)$/],
