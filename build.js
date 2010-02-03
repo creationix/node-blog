@@ -249,6 +249,9 @@ function render(data, next) {
     content: haml("index", data)
   }));
 
+  // Make the RSS Feed...
+  write_file(PUBLIC_DIR + "/feed.xml", haml("feed", data));
+
   // Write the static files as is...
   loop(data.static, function (filename, content) {
     write_file(PUBLIC_DIR + "/" + filename, content.content || content);
