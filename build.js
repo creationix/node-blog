@@ -219,9 +219,9 @@ function render(data, next) {
     return cmp(key1, key2);
   });
 
-  // Sort articles by date
+  // Sort articles by date, newest first
   data.articles = object_sort(data.articles, function (key1, value1, key2, value2) {
-    return cmp(value1.date, value2.date);
+    return cmp(value2.date, value1.date);
   });
 
   // Generate a page for each author...
