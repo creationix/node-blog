@@ -52,7 +52,7 @@ function build(data, next) {
 
   if (data) {
     log("Pulling latest changes to content");
-    exec("cd data && git pull origin master").addCallback(function (stdout, stderr) {
+    exec("cd " + __dirname + "/data && git pull origin master").addCallback(function (stdout, stderr) {
       real_build();
     });
   } else {
