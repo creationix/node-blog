@@ -1,3 +1,4 @@
+require.paths.unshift(__dirname);
 var QueryString = require('querystring'),
     Http = require('http'),
     Build = require('./build');

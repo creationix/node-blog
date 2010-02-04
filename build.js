@@ -1,14 +1,15 @@
 // Load some libraries
+require.paths.unshift(__dirname);
 var Haml = require('./vendor/haml'),
     Markdown = require('./vendor/markdown'),
     md5 = require('./vendor/md5').md5,
     File = require('file'),
     Posix = require('posix');
 
-var ARTICLE_DIR = 'data/articles',
-    AUTHOR_DIR = 'data/authors',
-    SKIN_DIR = 'data/skin',
-    PUBLIC_DIR = 'public';
+var ARTICLE_DIR = __dirname + '/data/articles',
+    AUTHOR_DIR = __dirname + '/data/authors',
+    SKIN_DIR = __dirname + '/data/skin',
+    PUBLIC_DIR = __dirname + '/public';
 
 var articles, authors;
 
