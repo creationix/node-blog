@@ -221,7 +221,7 @@ function render(data, next) {
 
   // Sort articles by date, newest first
   data.articles = object_sort(data.articles, function (key1, value1, key2, value2) {
-    return cmp(value2.date, value1.date);
+    return cmp(Date.parse(value2.date), Date.parse(value1.date));
   });
 
   // Generate a page for each author...
