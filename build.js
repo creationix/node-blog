@@ -226,8 +226,8 @@ function render(data, next) {
 
   // Generate a page for each author...
   loop(data.authors, function (name, props) {
-    props.link = name.toLowerCase().replace(/ /g, "_") + ".html";
-    write_file(PUBLIC_DIR + "/" + props.link, haml("layout", {
+    props.link = name.toLowerCase().replace(/ /g, "_");
+    write_file(PUBLIC_DIR + "/" + props.link + ".html", haml("layout", {
       title: "About " + name,
       content: haml("author", props)
     }));
@@ -235,9 +235,9 @@ function render(data, next) {
 
   // Generate a page for each article...
   loop(data.articles, function (name, props) {
-    props.link = name + ".html";
+    props.link = name;
     props.author = data.authors[props.author];
-    write_file(PUBLIC_DIR + "/" + props.link, haml("layout", {
+    write_file(PUBLIC_DIR + "/" + props.link + ".html", haml("layout", {
       title: props.title,
       content: haml("article", props)
     }));
