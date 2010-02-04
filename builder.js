@@ -16,10 +16,9 @@ Http.createServer(function (req, res) {
     body += chunk;
   });
   req.addListener('complete', function () {
-    try {
-      body = QueryString.parse(body).query.payload;
+    if (body.length > 0) {
       log("Received GitHub POST hook: " + body);
-    } catch(e) {
+    } else {
       body = false;
       log("Manual refresh");
     }
