@@ -7,7 +7,7 @@ if (exports) {
 
 (function () {
 
-  var matchers, self_close_tags;
+  var matchers, self_close_tags, embedder;
 
   function html_escape(text) {
     if (typeof text !== 'string') {
@@ -131,6 +131,37 @@ if (exports) {
     return attributes;
   }
 
+  // Split interpolated strings into an array of literals and code fragments.
+  function parse_interpol(value) {
+    var items = [],
+        pos = 0,
+        next = 0,
+        match;
+    while (true) {
+      // Match up to embedded string
+      next = value.substr(pos).search(embedder);
+      if (next < 0) {
+        if (pos < value.length) {
+          items.push(JSON.stringify(value.substr(pos)));
+        }
+        break;
+      }
+      items.push(JSON.stringify(value.substr(pos, next)));
+      pos += next;
+
+      // Match embedded string
+      match = value.substr(pos).match(embedder);
+      next = match[0].length;
+      if (next < 0) { break; }
+      items.push(match[1] || match[2]);
+      pos += next;
+    }
+    return items.join(" + ");
+  }
+
+  // Used to find embedded code in interpolated strings.
+  embedder = /\#\{([^}]*)\}/;
+
   self_close_tags = ["meta", "img", "link", "br", "hr", "input", "area", "base"];
 
   // All matchers' regexps should capture leading whitespace in first capture
@@ -204,7 +235,7 @@ if (exports) {
 
     // each loops
     {
-      regexp: /^(\s*):each\s+(?:([a-z_][a-z_\-]*),\s*)?([a-z_][a-z_\-]*)\s+in\s+([a-z_][a-z_\-]*)(.*)$/i,
+      regexp: /^(\s*)(?::for|:each)\s+(?:([a-z_][a-z_\-]*),\s*)?([a-z_][a-z_\-]*)\s+in\s+(.*)(\s*)$/i,
       process: function () {
         var ivar = this.matches[2] || '__key__', // index
             vvar = this.matches[3],              // value
@@ -288,7 +319,7 @@ if (exports) {
     {
       regexp: /^(\s*):markdown\s*$/i,
       process: function () {
-        return exports.Markdown.encode(this.contents.join("\n"));
+        return parse_interpol(exports.Markdown.encode(this.contents.join("\n")));
       }
     },
 
@@ -296,7 +327,7 @@ if (exports) {
     {
       regexp: /^(\s*):(?:java)?script\s*$/,
       process: function () {
-        return JSON.stringify('\n<script type="text/javascript">\n' +
+        return parse_interpol('\n<script type="text/javascript">\n' +
           '//<![CDATA[\n  ' +
           this.contents.join("\n  ") +
           "\n//]]>\n</script>\n");
