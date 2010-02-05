@@ -174,7 +174,7 @@ function render(data, next) {
       size = size || 80
       return "http://www.gravatar.com/avatar/" +
         md5(email.trim().toLowerCase()) +
-        "?r=pg&s=" + size + ".jpg";
+        "?r=pg&s=" + size + ".jpg&d=identicon";
     },
     partial: function (name, props) {
       var locals = Object.create(Helpers);
