@@ -251,7 +251,7 @@ function render(data, next) {
   }));
 
   // Make the RSS Feed...
-  write_file(PUBLIC_DIR + "/feed.xml", haml("feed", data));
+  write_file(PUBLIC_DIR + "/feed.xml", haml("feed", data).replace(/(&lt;code&gt;)\#\![a-z]+\n/g, "$1"));
 
   // Write the static files as is...
   loop(data.static, function (filename, content) {
