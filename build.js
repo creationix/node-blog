@@ -270,6 +270,10 @@ exports.build = function (next) {
     ["templates", SKIN_DIR, /^(.*)\.(haml)$/],
     ["static", SKIN_DIR, /^(.*\.(?:css|js))$/]
   ], function (data) {
-    render(data, next);
+    Posix.mkdir(PUBLIC_DIR, 0777).addCallback(function () {
+      render(data, next);
+    }).addErrback(function () {
+      render(data, next);
+    });
   });
 };
