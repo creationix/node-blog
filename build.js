@@ -117,10 +117,11 @@ function Combo(callback) {
 }
 Combo.prototype = {
   add: function () {
-    var self = this;
+    var self = this,
+        id = this.items;
     this.items++;
     return function () {
-      self.check(self.items - 1, arguments);
+      self.check(id, arguments);
     };
   },
   check: function (id, arguments) {
