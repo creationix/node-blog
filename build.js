@@ -3,8 +3,7 @@ require.paths.unshift(__dirname);
 var Haml = require('./vendor/haml'),
     Markdown = require('./vendor/markdown'),
     md5 = require('./vendor/md5').md5,
-    File = require('file'),
-    Posix = require('posix');
+    fs = require('fs');
 
 var ARTICLE_DIR = __dirname + '/data/articles',
     AUTHOR_DIR = __dirname + '/data/authors',
@@ -50,7 +49,7 @@ var Filters = {
 // Processes a folder of data.
 function process_folder(folder, filter, next) {
   var items = {};
-  Posix.readdir(folder).addCallback(function (names) {
+  fs.readdir(folder).addCallback(function (names) {
     var left = 0;
     if (names.length === 0) {
       next(items);
@@ -69,7 +68,7 @@ function process_folder(folder, filter, next) {
         format = match[2];
       }
       left++;
-      File.read(folder + "/" + filename).addCallback(function (text) {
+      fs.readFile(folder + "/" + filename).addCallback(function (text) {
         if (Filters[format]) {
           items[name] = Filters[format](text);
           items[name].name = name;
@@ -161,7 +160,7 @@ function render(data, next) {
 
   function write_file(filename, content) {
     var cb = group.add();
-    File.write(filename, content).addCallback(function () {
+    fs.writeFile(filename, content).addCallback(function () {
       cb(new Date(), "  Wrote " + content.length + " bytes to " + filename);
     })
   }
@@ -270,7 +269,7 @@ exports.build = function (next) {
     ["templates", SKIN_DIR, /^(.*)\.(haml)$/],
     ["static", SKIN_DIR, /^(.*\.(?:css|js))$/]
   ], function (data) {
-    Posix.mkdir(PUBLIC_DIR, 0777).addCallback(function () {
+    fs.mkdir(PUBLIC_DIR, 0777).addCallback(function () {
       render(data, next);
     }).addErrback(function () {
       render(data, next);

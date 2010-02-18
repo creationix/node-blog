@@ -12,10 +12,10 @@ function log(message) {
 Http.createServer(function (req, res) {
   var body = "";
   req.setBodyEncoding('utf8');
-  req.addListener('body', function (chunk) {
+  req.addListener('data', function (chunk) {
     body += chunk;
   });
-  req.addListener('complete', function () {
+  req.addListener('end', function () {
     if (body.length > 0) {
       log("Received GitHub POST hook: " + body);
     } else {
@@ -24,8 +24,8 @@ Http.createServer(function (req, res) {
     }
     build(body, function (output) {
       res.sendHeader(200, {'Content-Type': 'text/plain'});
-      res.sendBody(output);
-      res.finish();
+      res.write(output);
+      res.close();
     });
   });
 
