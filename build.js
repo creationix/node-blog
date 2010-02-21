@@ -33,10 +33,6 @@ var Filters = {
     return Haml.compile(haml);
   },
 
-  less: function (less) {
-    return Less.compile(less);
-  },
-
   // Catchall
   method_missing: function (format, text) {
     // return text;
@@ -62,7 +58,11 @@ function process_folder(path) { return function (callback, errback) {
       callback(pairs.reduce(function (obj, el) {
         var ext = el[0].match(/[^.]*$/)[0];
         var val = Filters[ext] ? Filters[ext](el[1]) : Filters.method_missing(ext, el[1]);
-        obj[el[0].match(/([^/]*)\.[^\/]*$/)[1]] = val;
+        var name = el[0].match(/([^/]*)\.[^\/]*$/)[1];
+        if (typeof val === 'object') {
+          val.name = name;
+        }
+        obj[name] = val;
         return obj;
       }, {}));
     }, errback);
