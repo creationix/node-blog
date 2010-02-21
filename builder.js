@@ -47,7 +47,7 @@ function build(data, next) {
       log(output);
       building = false;
       next(output);
-    });
+    }, log);
   }
 
   if (data) {
@@ -59,7 +59,7 @@ function build(data, next) {
     real_build();
   }
 }
-build(undefined, function(output) {
+build(null, function(output) {
   log("Initial build done. Waiting for more requests");
   log('Server running at http://127.0.0.1:' + PORT + '/');
 });
