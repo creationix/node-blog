@@ -62,7 +62,7 @@ function process_folder(path) { return function (callback, errback) {
       callback(pairs.reduce(function (obj, el) {
         var ext = el[0].match(/[^.]*$/)[0];
         var val = Filters[ext] ? Filters[ext](el[1]) : Filters.method_missing(ext, el[1]);
-        obj[el[0].match(/([^./]*)[^\/]*$/)[1]] = val;
+        obj[el[0].match(/([^/]*)\.[^\/]*$/)[1]] = val;
         return obj;
       }, {}));
     }, errback);
