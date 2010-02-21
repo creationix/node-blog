@@ -69,29 +69,6 @@ function process_folder(path) { return function (callback, errback) {
   }, errback);
 }}
 
-// combo library.  Allows to group several callbacks.
-function Combo(callback) {
-  this.callback = callback;
-  this.items = 0;
-  this.results = [];
-}
-Combo.prototype = {
-  add: function () {
-    var self = this,
-        id = this.items;
-    this.items++;
-    return function () {
-      self.check(id, arguments);
-    };
-  },
-  check: function (id, arguments) {
-    this.results[id] = Array.prototype.slice.call(arguments);
-    this.items--;
-    if (this.items == 0) {
-      this.callback.apply(this, this.results);
-    }
-  }
-};
 
 
 // Simple loop over objects.
@@ -129,7 +106,7 @@ exports.build = function (next, error_handler) {
     process_folder(ARTICLE_DIR),
     process_folder(SKIN_DIR)
   )(function (authors, articles, templates) {
-    var group = new Combo(function() {
+    var group = Do.combo(function() {
       next("Done!\n" + Array.prototype.map.call(arguments, function (args) {
         return args[0] + " - " + args[1];
       }).join("\n"))
