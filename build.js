@@ -18,7 +18,7 @@ var Filters = {
   markdown: function (markdown) {
     var match;
     var props = {};
-    while(match = markdown.match(/^([a-z]+):\s*(.*)\s*$/im)) {
+    while(match = markdown.match(/^([a-z]+):\s*(.*)\s*\n/i)) {
       var name = match[1].toLowerCase(),
           value = match[2];
       markdown = markdown.substr(match[0].length);
